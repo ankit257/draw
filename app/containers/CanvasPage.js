@@ -284,7 +284,7 @@ class CanvasPage extends Component{
 	            </div>
 	          </div>
 	          </div>
-	          <div className="container-fluid">
+	          <div className="container">
 		          <div className="row">
 		            <div className="col-md-8">
 		            	<canvas id="canvas" className="canvas" height="480" width="650" 
