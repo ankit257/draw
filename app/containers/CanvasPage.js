@@ -134,9 +134,9 @@ class CanvasPage extends Component{
 			<div>
 				<ul className="list-group">
 	 				{Array.isArray(paths) && paths.map((path, index) => (
-	 					<li className="list-group-item justify-content-between">
+	 					<li key={index} className="list-group-item justify-content-between">
 	 						<span onClick={that.pathHighlight(null, index)}>path: {index + 1}</span> 
-	 						<span className="badge badge-default badge-pill" onClick={that.splicePath.bind(that, index)}>X</span>
+	 						<span className="badge badge-default badge-pill delete" onClick={that.splicePath.bind(that, index)}>✕</span>
 	 					</li>
 	 				))}
 	 			</ul>
@@ -198,43 +198,43 @@ class CanvasPage extends Component{
 			canvas.style.background = '#000';
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			for (var i = 0; i < paths.length; i++) {
-				ctx.beginPath();
+				// ctx.beginPath();
 				for (var j = 0; j < paths[i].length; j++) {
 					cv++;
-					// ctx.moveTo(0,0);
+					ctx.moveTo(0,0);
 					const {x, y} = paths[i][j];
-					// ctx.moveTo(x, y);
-					// ctx.fillStyle = '#3370d4';
-					// ctx.beginPath();
-					// ctx.arc(x, y, 5, 0, Math.PI*2, true);
-					// ctx.closePath();
-					// ctx.fill();
-					let path = paths[i];//[paths.length-1];
-					let lastCoords = path[j-1];
-					// ctx.moveTo(0,0);
-					if(lastCoords){
-						ctx.strokeStyle = '#3370d4';
-						ctx.lineWidth = 10;
-						ctx.moveTo(lastCoords.x, lastCoords.y);
-						let tmpX = (x+lastCoords.x)/2;
-						let tmpY = (y+lastCoords.y)/2;
-						// ctx.beginPath();
-						ctx.quadraticCurveTo(x, y, tmpX, tmpY);
-						// ctx.closePath();
-						ctx.stroke();
-					}else{
-						ctx.moveTo(x, y);
-						ctx.fillStyle = '#3370d4';
-						ctx.beginPath();
-						ctx.arc(x, y, 5, 0, Math.PI*2, true);
-						ctx.closePath();
-						ctx.fill();
-					}
+					ctx.moveTo(x, y);
+					ctx.fillStyle = '#3370d4';
+					ctx.beginPath();
+					ctx.arc(x, y, 5, 0, Math.PI*2, true);
+					ctx.closePath();
+					ctx.fill();
+					// let path = paths[i];//[paths.length-1];
+					// let lastCoords = path[j-1];
+					// // ctx.moveTo(0,0);
+					// if(lastCoords){
+					// 	ctx.strokeStyle = '#3370d4';
+					// 	ctx.lineWidth = 10;
+					// 	ctx.moveTo(lastCoords.x, lastCoords.y);
+					// 	let tmpX = (x+lastCoords.x)/2;
+					// 	let tmpY = (y+lastCoords.y)/2;
+					// 	// ctx.beginPath();
+					// 	ctx.quadraticCurveTo(x, y, tmpX, tmpY);
+					// 	// ctx.closePath();
+					// 	ctx.stroke();
+					// }else{
+					// 	ctx.moveTo(x, y);
+					// 	ctx.fillStyle = '#3370d4';
+					// 	ctx.beginPath();
+					// 	ctx.arc(x, y, 5, 0, Math.PI*2, true);
+					// 	ctx.closePath();
+					// 	ctx.fill();
+					// }
 					if((timeNow - timeStart)/20 < cv){
 						break;
 					}
 				}
-				ctx.closePath();
+				// ctx.closePath();
 			}
 		  requestAnimationFrame(animate);
 		}
