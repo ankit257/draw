@@ -7,19 +7,19 @@ import routes from '../routes';
 import { BrowserRouter } from 'react-router-dom'
 import App from './App';
 import TodoPage from './TodoPage';
+import CanvasPage from './CanvasPage';
 
 // import DevTools from './DevTools' See react redux todo example for devtools
 
 const Root = ({ store, history }) => (
 	<Provider store={store}>
-		<div>
 			<BrowserRouter>
 				<Switch>
+					<Route path="/canvas" component={CanvasPage} />
 					<Route path="/todo/:id" component={TodoPage} />
 					<Route path="/" component={App}/>
 		  		</Switch>
 			</BrowserRouter>
-		</div>
 	</Provider>
 );
 Root.propTypes = {

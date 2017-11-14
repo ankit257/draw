@@ -2,16 +2,13 @@
   "name": "react-redux-universal-minimalistic-boilerplate",
   "version": "1.0.0",
   "description": "A minimalistic react redux based boilerplate with server side rendering built with webpack",
-  
   "main": "index.js",
-  
   "scripts": {
     "start": "node index.js",
     "prestart": "npm run build",
     "build": "webpack --config webpack.config.js --color -p --progress",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  
   "keywords": [
     "react",
     "redux",
@@ -20,16 +17,14 @@
     "webpack",
     "babel"
   ],
-  
   "author": "Ankit S",
-  
   "license": "ISC",
-  
   "dependencies": {
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2016": "^6.24.1",
     "express": "^4.15.3",
     "humps": "^2.0.1",
+    "modernizr": "^3.5.0",
     "node-fetch": "^1.7.1",
     "normalizr": "^3.2.3",
     "preact": "^8.2.5",

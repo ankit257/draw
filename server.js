@@ -12,6 +12,7 @@ import render from './render';
 import fetch from 'node-fetch';
 import App from './app/containers/App';
 import TodoPage from './app/containers/TodoPage';
+import CanvasPage from './app/containers/CanvasPage';
 import { Provider } from 'react-redux'
 
 const port = process.env.PORT || 3000;
@@ -64,6 +65,10 @@ const routes = [
 	    component: App,
 	    loadData: (params) => getSomeData(params),
 	},
+	{ path: '/canvas',
+	    component: CanvasPage,
+	    loadData: (params) => getSomeData(params),
+	},
 	{ path: '/todo/:todoid',
 	    component: TodoPage,
 	    loadData: (params) => getSomeData(params),
@@ -84,7 +89,7 @@ app.get('*', (req, res, next) => {
     }
     const promises = [];
 
-	var c = routes.some(route => {
+	routes.some(route => {
 	  const match = matchPath(req.url, route)
 	  if (match)
 	  { 
@@ -98,14 +103,13 @@ app.get('*', (req, res, next) => {
         res.status(200).send(render(
             (
             	<Provider store={store}>
-				  <div>
 					<StaticRouter context={{}} location={req.url}>
 						<Switch>
+							<Route path="/canvas" component={CanvasPage} />
 							<Route path="/todo/:id" component={TodoPage} />
 							<Route path="/" component={App}/>
 				  		</Switch>
 					</StaticRouter>
-				</div>
                 </Provider>
             ),  finalState
         ));
