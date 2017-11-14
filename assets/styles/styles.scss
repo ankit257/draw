@@ -7,7 +7,15 @@
 }
 .list-group-item{
 	background: #000;
+	border: 1px solid #333;
 }
 .list-group-item span{
+	cursor: pointer;
+}
+.button-group{
+	padding: 20px;
+}
+.button-group button{
+	margin: 0 10px 0 10px;
 	cursor: pointer;
 }

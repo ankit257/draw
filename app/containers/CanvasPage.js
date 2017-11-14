@@ -109,11 +109,7 @@ class CanvasPage extends Component{
 		if(left%30 < 5 && top%5 < 5){
 			let m = parseInt(left/30);
 			let n = parseInt(top/30);
-			// if(map[m][n] === 1){
-			// 	map[m][n] = 0;
-			// }else{
 			map[m][n] = 1;
-			// }
 			this.drawMap();
 		}
 	}
@@ -125,7 +121,11 @@ class CanvasPage extends Component{
 	}
 	splicePath(index){
 		paths.splice(index, 1);
-		// this.setState({paths : paths});
+		this.drawEntirePath();
+		this.setState({paths : paths});
+	}
+	savePath(){
+		//Call API to save paths
 	}
 	makeToolbar(){
 		let pathsToRender = [];
@@ -136,13 +136,18 @@ class CanvasPage extends Component{
 	 				{Array.isArray(paths) && paths.map((path, index) => (
 	 					<li className="list-group-item justify-content-between">
 	 						<span onClick={that.pathHighlight(null, index)}>path: {index + 1}</span> 
-	 						<span className="badge badge-default badge-pill" onClick={that.splicePath(null, index)}>X</span>
+	 						<span className="badge badge-default badge-pill" onClick={that.splicePath.bind(that, index)}>X</span>
 	 					</li>
 	 				))}
 	 			</ul>
-				<button type="button" className="btn btn-outline-primary" onClick={this.playAnim.bind(this)}>
-					<span className="fa fa-play"></span>
+	 			<div className="button-group">
+				<button type="button" className="btn btn-outline-primary btn-lg" onClick={this.playAnim.bind(this)}>
+					play&nbsp;&nbsp;<span className="fa fa-play"></span>
 				</button>
+				<button type="button" className="btn btn-outline-primary btn-lg" onClick={this.savePath.bind(this)}>
+					save&nbsp;&nbsp;<span className="fa fa-floppy-o"></span>
+				</button>
+				</div>
 			</div>
 		)
 	}
@@ -155,9 +160,11 @@ class CanvasPage extends Component{
 		let x = evt.clientX - evt.target.getBoundingClientRect().left;
 		let y = evt.clientY - evt.target.getBoundingClientRect().top;
 		paths.push([{x:x, y:y}]);
+
 	}
 	stopDraw(){
 		drawBool = false;
+		this.drawEntirePath();
 		this.setState({map : map});
 	}
 	updatePath(x,y){
@@ -167,6 +174,22 @@ class CanvasPage extends Component{
 			path.push({x:x, y:y});		
 		// }
 	}
+	drawEntirePath(){
+		canvas.style.background = '#000';
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		for (var i = 0; i < paths.length; i++) {
+			for (var j = 0; j < paths[i].length; j++) {
+				ctx.moveTo(0,0);
+				const {x, y} = paths[i][j];
+				ctx.moveTo(x, y);
+				ctx.fillStyle = '#3370d4';
+				ctx.beginPath();
+				ctx.arc(x, y, 5, 0, Math.PI*2, true);
+				ctx.closePath();
+				ctx.fill();
+			}
+		}
+	}
 	drawPaths(){
 		let timeStart = Date.now();
 		function animate() {
@@ -175,27 +198,49 @@ class CanvasPage extends Component{
 			canvas.style.background = '#000';
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			for (var i = 0; i < paths.length; i++) {
+				ctx.beginPath();
 				for (var j = 0; j < paths[i].length; j++) {
 					cv++;
-					ctx.moveTo(0,0);
+					// ctx.moveTo(0,0);
 					const {x, y} = paths[i][j];
-					ctx.moveTo(x, y);
-					ctx.fillStyle = '#3370d4';
-					ctx.beginPath();
-					ctx.arc(x, y, 5, 0, Math.PI*2, true);
-					ctx.closePath();
-					ctx.fill();
+					// ctx.moveTo(x, y);
+					// ctx.fillStyle = '#3370d4';
+					// ctx.beginPath();
+					// ctx.arc(x, y, 5, 0, Math.PI*2, true);
+					// ctx.closePath();
+					// ctx.fill();
+					let path = paths[i];//[paths.length-1];
+					let lastCoords = path[j-1];
+					// ctx.moveTo(0,0);
+					if(lastCoords){
+						ctx.strokeStyle = '#3370d4';
+						ctx.lineWidth = 10;
+						ctx.moveTo(lastCoords.x, lastCoords.y);
+						let tmpX = (x+lastCoords.x)/2;
+						let tmpY = (y+lastCoords.y)/2;
+						// ctx.beginPath();
+						ctx.quadraticCurveTo(x, y, tmpX, tmpY);
+						// ctx.closePath();
+						ctx.stroke();
+					}else{
+						ctx.moveTo(x, y);
+						ctx.fillStyle = '#3370d4';
+						ctx.beginPath();
+						ctx.arc(x, y, 5, 0, Math.PI*2, true);
+						ctx.closePath();
+						ctx.fill();
+					}
 					if((timeNow - timeStart)/20 < cv){
 						break;
 					}
 				}
+				ctx.closePath();
 			}
 		  requestAnimationFrame(animate);
 		}
 		animate(); 
 	}
 	draw(touch, e){
-		debugger
 		if(drawBool){
 			let evt = e;
 			if(touch){
@@ -203,14 +248,29 @@ class CanvasPage extends Component{
 			}
 			let x = evt.clientX - evt.target.getBoundingClientRect().left;
 			let y = evt.clientY - evt.target.getBoundingClientRect().top;
-			this.updatePath(x, y);
+			let path = paths[paths.length-1];
+			let lastCoords = path[path.length-1];
 			ctx.moveTo(0,0);
-			ctx.moveTo(x, y);
-			ctx.fillStyle = '#3370d4';
-			ctx.beginPath();
-			ctx.arc(x, y, 5, 0, Math.PI*2, true);
-			ctx.closePath();
-			ctx.fill();
+			if(lastCoords){
+				ctx.strokeStyle = '#3370d4';
+				ctx.lineWidth = 10;
+				ctx.moveTo(lastCoords.x, lastCoords.y);
+				let tmpX = (x+lastCoords.x)/2;
+				let tmpY = (y+lastCoords.y)/2;
+				ctx.beginPath();
+				ctx.quadraticCurveTo(x, y, tmpX, tmpY);
+				ctx.closePath();
+				ctx.stroke();
+			}else{
+				ctx.moveTo(x, y);
+				ctx.fillStyle = '#3370d4';
+				ctx.beginPath();
+				ctx.arc(x, y, 5, 0, Math.PI*2, true);
+				ctx.closePath();
+				ctx.fill();
+			}
+			this.updatePath(x, y);
+			
 		}
 	}
 	render() {
