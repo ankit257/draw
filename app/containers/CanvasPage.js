@@ -12,10 +12,8 @@ let map = [];
 let paths = [];
 let touchSupported;
 let drawBool = false;
-let canvas = document.getElementById('canvas');
-let ctx = canvas.getContext('2d');
-canvas.style.background = '#000';
-ctx.clearRect(0, 0, canvas.width, canvas.height);
+let canvas;
+let ctx;
 let reqAnimFrameId;
 // if(Modernizr){
 // 	touchSupported = Modernizr.touch;	
@@ -52,12 +50,11 @@ class CanvasPage extends Component{
 		}
 	}
 	componentDidMount(){
-		let canvas = document.getElementById('canvas');
-		var ctx = canvas.getContext('2d');
+		canvas = document.getElementById('canvas');
+		ctx = canvas.getContext('2d');
 		canvas.style.background = '#000';
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.moveTo(0,0);
-		
 		for (var i = 0; i < this.state.x; i++) {
 			map[i] = [];
 			for (var j = 0; j < this.state.y; j++) {
