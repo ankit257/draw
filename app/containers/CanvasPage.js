@@ -15,6 +15,7 @@ let drawBool = false;
 let canvas;
 let ctx;
 let reqAnimFrameId;
+let highlightedPathIndex;
 // if(Modernizr){
 // 	touchSupported = Modernizr.touch;	
 // }
@@ -119,11 +120,26 @@ class CanvasPage extends Component{
 	playAnim(){
 		this.drawPaths()
 	}
+	pathHighlight(index){
+		highlightedPathIndex = index;
+	}
+	splicePath(index){
+		paths.splice(index, 1);
+		// this.setState({paths : paths});
+	}
 	makeToolbar(){
 		let pathsToRender = [];
 		let that = this;
 		return (
 			<div>
+				<ul className="list-group">
+	 				{Array.isArray(paths) && paths.map((path, index) => (
+	 					<li className="list-group-item justify-content-between">
+	 						<span onClick={that.pathHighlight(null, index)}>path: {index + 1}</span> 
+	 						<span className="badge badge-default badge-pill" onClick={that.splicePath(null, index)}>X</span>
+	 					</li>
+	 				))}
+	 			</ul>
 				<button type="button" className="btn btn-outline-primary" onClick={this.playAnim.bind(this)}>
 					<span className="fa fa-play"></span>
 				</button>
@@ -142,6 +158,7 @@ class CanvasPage extends Component{
 	}
 	stopDraw(){
 		drawBool = false;
+		this.setState({map : map});
 	}
 	updatePath(x,y){
 		let path = paths[paths.length-1];
