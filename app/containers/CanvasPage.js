@@ -179,14 +179,42 @@ class CanvasPage extends Component{
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		for (var i = 0; i < paths.length; i++) {
 			for (var j = 0; j < paths[i].length; j++) {
-				ctx.moveTo(0,0);
+				// ctx.moveTo(0,0);
 				const {x, y} = paths[i][j];
-				ctx.moveTo(x, y);
-				ctx.fillStyle = '#3370d4';
-				ctx.beginPath();
-				ctx.arc(x, y, 5, 0, Math.PI*2, true);
-				ctx.closePath();
-				ctx.fill();
+				// ctx.moveTo(x, y);
+				// ctx.fillStyle = '#3370d4';
+				// ctx.beginPath();
+				// ctx.arc(x, y, 5, 0, Math.PI*2, true);
+				// ctx.closePath();
+				// ctx.fill();
+				let path = paths[i];//[paths.length-1];
+				let {tmpX, tmpY} = path;
+				let lastCoords = path[j-1];
+				if(lastCoords){
+					tmpX = (x+lastCoords.x)/2;
+					tmpY = (y+lastCoords.y)/2;
+				}
+				if(j > 3){
+					lastCoords = path[j-3];
+					tmpX = (path[j-1].x+path[j-2].x)/2
+					tmpY = (path[j-1].y+path[j-2].y)/2
+				}
+				if(lastCoords){
+					ctx.strokeStyle = '#3370d4';
+					ctx.lineWidth = 10;
+					ctx.moveTo(lastCoords.x, lastCoords.y);
+					ctx.beginPath();
+					ctx.quadraticCurveTo(x, y, tmpX, tmpY);
+					ctx.closePath();
+					ctx.stroke();
+				}else{
+					ctx.moveTo(x, y);
+					ctx.fillStyle = '#3370d4';
+					ctx.beginPath();
+					ctx.arc(x, y, 5, 0, Math.PI*2, true);
+					ctx.closePath();
+					ctx.fill();
+				}
 			}
 		}
 	}
@@ -198,41 +226,49 @@ class CanvasPage extends Component{
 			canvas.style.background = '#000';
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			for (var i = 0; i < paths.length; i++) {
-				// ctx.beginPath();
 				for (var j = 0; j < paths[i].length; j++) {
-					cv++;
-					ctx.moveTo(0,0);
 					const {x, y} = paths[i][j];
-					ctx.moveTo(x, y);
-					ctx.fillStyle = '#3370d4';
-					ctx.beginPath();
-					ctx.arc(x, y, 5, 0, Math.PI*2, true);
-					ctx.closePath();
-					ctx.fill();
-					// let path = paths[i];//[paths.length-1];
-					// let lastCoords = path[j-1];
-					// // ctx.moveTo(0,0);
-					// if(lastCoords){
-					// 	ctx.strokeStyle = '#3370d4';
-					// 	ctx.lineWidth = 10;
-					// 	ctx.moveTo(lastCoords.x, lastCoords.y);
-					// 	let tmpX = (x+lastCoords.x)/2;
-					// 	let tmpY = (y+lastCoords.y)/2;
-					// 	// ctx.beginPath();
-					// 	ctx.quadraticCurveTo(x, y, tmpX, tmpY);
-					// 	// ctx.closePath();
-					// 	ctx.stroke();
-					// }else{
-					// 	ctx.moveTo(x, y);
-					// 	ctx.fillStyle = '#3370d4';
-					// 	ctx.beginPath();
-					// 	ctx.arc(x, y, 5, 0, Math.PI*2, true);
-					// 	ctx.closePath();
-					// 	ctx.fill();
-					// }
+					// ctx.moveTo(x, y);
+					// ctx.fillStyle = '#3370d4';
+					// ctx.beginPath();
+					// ctx.arc(x, y, 5, 0, Math.PI*2, true);
+					// ctx.closePath();
+					// ctx.fill();
+					cv++;
+					let path = paths[i];//[paths.length-1];
+					let {tmpX, tmpY} = path;
+					let lastCoords = path[j-1];
+					if(lastCoords){
+						tmpX = (x+lastCoords.x)/2;
+						tmpY = (y+lastCoords.y)/2;
+					}
+					if(j > 3){
+						lastCoords = path[j-3];
+						tmpX = (path[j-1].x+path[j-2].x)/2
+						tmpY = (path[j-1].y+path[j-2].y)/2
+					}
+					if(lastCoords){
+						ctx.strokeStyle = '#3370d4';
+						ctx.lineWidth = 10;
+						ctx.moveTo(lastCoords.x, lastCoords.y);
+						ctx.beginPath();
+						ctx.quadraticCurveTo(x, y, tmpX, tmpY);
+						ctx.closePath();
+						ctx.stroke();
+					}else{
+						ctx.moveTo(x, y);
+						ctx.fillStyle = '#3370d4';
+						ctx.beginPath();
+						ctx.arc(x, y, 5, 0, Math.PI*2, true);
+						ctx.closePath();
+						ctx.fill();
+					}
 					if((timeNow - timeStart)/20 < cv){
 						break;
 					}
+				}
+				if((timeNow - timeStart)/20 < cv){
+					break;
 				}
 				// ctx.closePath();
 			}
@@ -248,15 +284,25 @@ class CanvasPage extends Component{
 			}
 			let x = evt.clientX - evt.target.getBoundingClientRect().left;
 			let y = evt.clientY - evt.target.getBoundingClientRect().top;
+			
 			let path = paths[paths.length-1];
-			let lastCoords = path[path.length-1];
+			let j = path.length;
 			ctx.moveTo(0,0);
+			let lastCoords = path[j-1];
+			let { tmpX, tmpY } = lastCoords;
+			if(lastCoords){
+				tmpX = (x+lastCoords.x)/2;
+				tmpY = (y+lastCoords.y)/2;
+			}
+			if(j > 3){
+				lastCoords = path[j-3];
+				tmpX = (path[j-1].x+path[j-2].x)/2
+				tmpY = (path[j-1].y+path[j-2].y)/2
+			}
 			if(lastCoords){
 				ctx.strokeStyle = '#3370d4';
 				ctx.lineWidth = 10;
 				ctx.moveTo(lastCoords.x, lastCoords.y);
-				let tmpX = (x+lastCoords.x)/2;
-				let tmpY = (y+lastCoords.y)/2;
 				ctx.beginPath();
 				ctx.quadraticCurveTo(x, y, tmpX, tmpY);
 				ctx.closePath();
